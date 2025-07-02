@@ -241,16 +241,7 @@
             overflow: hidden;
         }
         
-        .reading-progress {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 0%;
-            height: 2px;
-            background: #1A8917;
-            z-index: 9999;
-            transition: width 0.1s ease;
-        }
+
         
         .sticky-nav {
             backdrop-filter: blur(20px);
@@ -339,8 +330,7 @@
     </style>
 </head>
 <body class="bg-white dark:bg-medium-gray-900 font-inter transition-all duration-300 ease-in-out">
-    <!-- Reading Progress Bar -->
-    <div class="reading-progress" id="reading-progress"></div>
+
     
     <!-- Navigation -->
     <nav class="fixed top-0 left-0 right-0 z-50 sticky-nav" id="main-nav">
@@ -411,8 +401,8 @@
             <div class="bg-white dark:bg-medium-gray-800 rounded-2xl p-8 shadow-sm border border-medium-gray-200 dark:border-medium-gray-700 mb-8 fade-in">
                 <div class="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
                     <div class="flex-shrink-0">
-                        <div class="w-32 h-32 rounded-full hero-gradient flex items-center justify-center text-white text-4xl font-bold shadow-xl">
-                            MT
+                        <div class="w-32 h-32 rounded-full overflow-hidden shadow-xl">
+                            <img src="mt-kiran.jpg" alt="MT Kiran Bishwo" class="w-full h-full object-cover">
                         </div>
                     </div>
                     <div class="flex-1 text-center md:text-left">
@@ -918,16 +908,7 @@
             </div>
         </section>
 
-        <!-- Article Detail Page -->
-        <section id="article-page" class="page hidden">
-            <div class="py-16 px-4 sm:px-6 lg:px-8">
-                <div class="max-w-4xl mx-auto">
-                    <div id="article-content">
-                        <!-- Article content will be loaded here -->
-                    </div>
-                </div>
-            </div>
-        </section>
+
     </main>
 
     <!-- Footer -->
@@ -967,7 +948,53 @@
 
     <script>
         // Configuration
-        const STRAPI_URL = 'http://localhost:1337';
+        const ARTICLES = [
+        
+            {
+                id: 9,
+                title: "Customer Success Strategy: Turning Users into Advocates",
+                slug: "customer-success-strategy",
+                excerpt: "Strategies for building effective customer success programs that drive retention, expansion, and advocacy in SaaS businesses.",
+                readingTime: 8,
+                publishedAt: "2025-06-05T14:20:00.000Z",
+                tags: ["business", "customer", "saas"],
+                category: "Customer Success",
+                mediumUrl: "https://medium.com/@mtkiranbishwo/customer-success-strategy-turning-users-into-advocates"
+            },
+            {
+                id: 10,
+                title: "Agile Transformation: Beyond Scrum to True Business Agility",
+                slug: "agile-transformation",
+                excerpt: "A deep dive into agile transformation, focusing on cultural change, cross-functional collaboration, and building organizational agility.",
+                readingTime: 9,
+                publishedAt: "2025-06-03T12:00:00.000Z",
+                tags: ["business", "agile", "transformation"],
+                category: "Organizational Development",
+                mediumUrl: "https://medium.com/@mtkiranbishwo/agile-transformation-beyond-scrum-to-true-business-agility"
+            },
+            {
+                id: 11,
+                title: "API Design Principles: Building Developer-Friendly Interfaces",
+                slug: "api-design-principles",
+                excerpt: "Essential principles for designing APIs that developers love to use, covering REST conventions, documentation, and versioning strategies.",
+                readingTime: 7,
+                publishedAt: "2025-06-01T16:30:00.000Z",
+                tags: ["technology", "api", "development"],
+                category: "API Development",
+                mediumUrl: "https://medium.com/@mtkiranbishwo/api-design-principles-building-developer-friendly-interfaces"
+            },
+            {
+                id: 12,
+                title: "The Future of Work: Hybrid Models and Organizational Design",
+                slug: "future-of-work-hybrid-models",
+                excerpt: "Exploring hybrid work models, organizational design considerations, and management strategies for the future of work.",
+                readingTime: 8,
+                publishedAt: "2025-05-30T11:45:00.000Z",
+                tags: ["business", "future", "work"],
+                category: "Future of Work",
+                mediumUrl: "https://medium.com/@mtkiranbishwo/the-future-of-work-hybrid-models-and-organizational-design"
+            }
+        ];
         
         // State Management
         let articles = [];
@@ -978,7 +1005,6 @@
         const articlesGrid = document.getElementById('latest-articles-grid');
         const allArticlesList = document.getElementById('all-articles-list');
         const featuredArticle = document.getElementById('featured-article');
-        const articleContent = document.getElementById('article-content');
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
         const readingProgress = document.getElementById('reading-progress');
@@ -988,280 +1014,7 @@
         const searchResults = document.getElementById('search-results');
         const closeSearch = document.getElementById('close-search');
         
-        // Sample Articles Data (12+ articles)
-        function getFallbackArticles() {
-            return [
-                {
-                    id: 1,
-                    title: "The Future of Business Technology: AI, Automation, and Human-Centric Innovation",
-                    slug: "future-of-business-technology",
-                    content: `
-                        <p>Technology continues to reshape how we do business, from artificial intelligence to blockchain and beyond. In this article, we explore the emerging trends that will define the next decade of business innovation and how leaders can prepare for this transformation.</p>
-                        
-                        <h2>Artificial Intelligence in Business Operations</h2>
-                        <p>AI is no longer a futuristic concept but a present reality that's transforming industries across the board. From automated customer service chatbots to sophisticated predictive analytics systems, businesses are leveraging AI to improve operational efficiency and create more personalized customer experiences.</p>
-                        
-                        <p>The key to successful AI implementation lies not in replacing human workers, but in augmenting human capabilities. The most successful companies are those that find the sweet spot between automation and human creativity, using AI to handle routine tasks while freeing up their workforce to focus on strategic thinking and innovation.</p>
-                        
-                        <h2>The Sustainable Technology Revolution</h2>
-                        <p>Sustainability is becoming a business imperative, driven by both consumer demand and regulatory requirements. Companies that prioritize environmental responsibility are not only doing good for the planet but also attracting conscious consumers and top talent who value purpose-driven organizations.</p>
-                        
-                        <p>Green technology initiatives, from renewable energy adoption to circular economy principles, are proving to be not just environmentally beneficial but also economically advantageous in the long term.</p>
-                    `,
-                    excerpt: "Exploring how AI, automation, and sustainable practices are reshaping the business landscape and what leaders need to know to stay competitive.",
-                    readingTime: 8,
-                    publishedAt: "2025-06-28T10:00:00.000Z",
-                    tags: ["business", "technology", "ai"],
-                    category: "Business Strategy"
-                },
-                {
-                    id: 2,
-                    title: "Building Scalable Web Applications: Architecture Patterns and Best Practices",
-                    slug: "building-scalable-web-applications",
-                    content: `
-                        <p>Creating web applications that can handle exponential growth is both an art and a science. This comprehensive guide covers the essential principles, architectural patterns, and development practices that enable applications to scale efficiently.</p>
-                        
-                        <h2>Microservices vs Monolith: Making the Right Choice</h2>
-                        <p>The debate between microservices and monolithic architectures continues to evolve. While microservices offer benefits like independent deployment and technology diversity, they also introduce complexity in terms of service coordination and data consistency.</p>
-                        
-                        <p>The key is understanding your specific use case, team structure, and organizational maturity. Start with a well-structured monolith and evolve to microservices when you have clear service boundaries and the operational maturity to handle distributed systems.</p>
-                        
-                        <h2>Database Scaling Strategies</h2>
-                        <p>Your database design decisions today will impact your application's ability to scale tomorrow. We'll explore various scaling techniques including read replicas, sharding, and the strategic use of NoSQL databases for specific use cases.</p>
-                        
-                        <h2>Performance Optimization Techniques</h2>
-                        <p>Performance and scalability are closely related. Implementing effective caching strategies, optimizing database queries, and leveraging CDNs can dramatically improve your application's ability to handle increased load while maintaining fast response times.</p>
-                    `,
-                    excerpt: "A deep dive into architectural patterns, database design, and optimization techniques for building web applications that scale with your business.",
-                    readingTime: 12,
-                    publishedAt: "2025-06-25T14:30:00.000Z",
-                    tags: ["technology", "development", "architecture"],
-                    category: "Software Engineering"
-                },
-                {
-                    id: 3,
-                    title: "The Art of Product Management: Balancing Vision, Strategy, and Execution",
-                    slug: "art-of-product-management",
-                    content: `
-                        <p>Product management sits at the intersection of business, technology, and user experience. Great product managers are translators, advocates, and strategic thinkers who can balance competing priorities while maintaining focus on user value.</p>
-                        
-                        <h2>Customer-Centric Product Development</h2>
-                        <p>Everything starts with understanding your users' needs, pain points, and behaviors. The most successful products are built by teams that maintain constant contact with their users through research, interviews, and data analysis.</p>
-                        
-                        <p>User research isn't a one-time activity but an ongoing process that should inform every product decision. Building empathy for your users is the foundation of creating products that truly solve problems.</p>
-                        
-                        <h2>Strategic Prioritization Frameworks</h2>
-                        <p>With limited resources and unlimited ideas, effective prioritization becomes crucial. We'll explore frameworks like RICE scoring, the Kano model, and jobs-to-be-done theory that help product teams make data-driven decisions about what to build next.</p>
-                        
-                        <h2>Cross-functional Leadership</h2>
-                        <p>Product managers must excel at working with engineering, design, marketing, and sales teams. Success requires strong communication skills, the ability to influence without authority, and a talent for aligning diverse stakeholders around a common vision.</p>
-                    `,
-                    excerpt: "Essential insights into product management, from user research and prioritization to cross-functional leadership and strategic thinking.",
-                    readingTime: 10,
-                    publishedAt: "2025-06-20T09:15:00.000Z",
-                    tags: ["product", "business", "strategy"],
-                    category: "Product Management"
-                },
-                {
-                    id: 4,
-                    title: "Startup Fundraising in 2025: Navigating the New Investment Landscape",
-                    slug: "startup-fundraising-2025",
-                    content: `
-                        <p>The startup fundraising landscape has evolved significantly, with new investor expectations, valuation methodologies, and due diligence processes. Understanding these changes is crucial for entrepreneurs seeking to raise capital in today's environment.</p>
-                        
-                        <h2>The Shift Toward Sustainable Growth</h2>
-                        <p>Investors are increasingly focused on sustainable unit economics and path to profitability rather than growth at any cost. This shift requires startups to demonstrate not just rapid user acquisition but also strong retention metrics and clear monetization strategies.</p>
-                        
-                        <h2>Alternative Funding Sources</h2>
-                        <p>Beyond traditional VC funding, entrepreneurs now have access to revenue-based financing, crowdfunding platforms, and government grants. Each funding source comes with different terms, expectations, and strategic implications for your business.</p>
-                        
-                        <h2>Building Investor Relationships</h2>
-                        <p>Successful fundraising starts with relationship building long before you need capital. The most effective entrepreneurs cultivate investor relationships through regular updates, seeking advice, and demonstrating consistent progress toward their goals.</p>
-                    `,
-                    excerpt: "A comprehensive guide to startup fundraising in 2025, covering new investor expectations, alternative funding sources, and relationship building strategies.",
-                    readingTime: 9,
-                    publishedAt: "2025-06-18T16:45:00.000Z",
-                    tags: ["startup", "business", "fundraising"],
-                    category: "Entrepreneurship"
-                },
-                {
-                    id: 5,
-                    title: "Remote Team Management: Building Culture and Productivity in Distributed Organizations",
-                    slug: "remote-team-management",
-                    content: `
-                        <p>The shift to remote work has fundamentally changed how we build teams, maintain culture, and drive productivity. Leading distributed teams requires new skills, tools, and approaches to communication and collaboration.</p>
-                        
-                        <h2>Creating Connection in Virtual Environments</h2>
-                        <p>Building strong relationships among remote team members requires intentional effort and creative approaches. Regular video calls, virtual coffee chats, and team building activities help maintain the human connection that drives collaboration.</p>
-                        
-                        <h2>Asynchronous Communication Strategies</h2>
-                        <p>Effective remote teams master asynchronous communication, reducing dependency on real-time meetings while ensuring important information flows efficiently. This includes clear documentation practices, structured update processes, and thoughtful use of collaboration tools.</p>
-                        
-                        <h2>Performance Management in Remote Settings</h2>
-                        <p>Managing performance remotely requires a shift from time-based to outcome-based evaluation. Setting clear expectations, regular check-ins, and focusing on results rather than hours worked becomes essential for remote team success.</p>
-                    `,
-                    excerpt: "Strategies for building strong remote teams, maintaining company culture, and driving productivity in distributed work environments.",
-                    readingTime: 7,
-                    publishedAt: "2025-06-15T11:20:00.000Z",
-                    tags: ["business", "management", "remote"],
-                    category: "Management"
-                },
-                {
-                    id: 6,
-                    title: "The Psychology of User Experience: How Cognitive Biases Shape Digital Product Design",
-                    slug: "psychology-of-user-experience",
-                    content: `
-                        <p>Understanding human psychology is fundamental to creating exceptional user experiences. Cognitive biases, mental models, and behavioral patterns significantly influence how users interact with digital products.</p>
-                        
-                        <h2>Cognitive Load and Interface Design</h2>
-                        <p>Every interface element adds to the user's cognitive load. Successful designs minimize unnecessary complexity while providing clear pathways to complete tasks. This involves careful information hierarchy, progressive disclosure, and intuitive navigation patterns.</p>
-                        
-                        <h2>The Power of Defaults and Nudges</h2>
-                        <p>Default settings and subtle design nudges can significantly influence user behavior. Understanding concepts like loss aversion, anchoring bias, and social proof enables designers to create interfaces that guide users toward optimal outcomes.</p>
-                        
-                        <h2>Building Trust Through Design</h2>
-                        <p>Trust is earned through consistent, reliable experiences. Visual design, micro-interactions, error handling, and transparency in data usage all contribute to building user confidence in your product.</p>
-                    `,
-                    excerpt: "Exploring how psychological principles and cognitive biases can inform better user experience design decisions in digital products.",
-                    readingTime: 8,
-                    publishedAt: "2025-06-12T13:30:00.000Z",
-                    tags: ["design", "psychology", "product"],
-                    category: "User Experience"
-                },
-                {
-                    id: 7,
-                    title: "Data-Driven Decision Making: Building Analytics Culture in Growing Companies",
-                    slug: "data-driven-decision-making",
-                    content: `
-                        <p>Transforming from intuition-based to data-driven decision making is crucial for scaling businesses. However, building an analytics culture requires more than just implementing tools—it requires changing mindsets and processes.</p>
-                        
-                        <h2>Establishing Key Performance Indicators</h2>
-                        <p>Effective KPIs align with business objectives and drive the right behaviors. The challenge lies in selecting metrics that are both meaningful and actionable, avoiding vanity metrics that look impressive but don't drive real business value.</p>
-                        
-                        <h2>Data Quality and Governance</h2>
-                        <p>Reliable analytics depend on high-quality data. Establishing data governance processes, validation procedures, and clear ownership ensures that decisions are based on accurate, consistent information.</p>
-                        
-                        <h2>Democratizing Data Access</h2>
-                        <p>The most successful data-driven organizations make analytics accessible to all team members, not just data specialists. Self-service analytics tools and data literacy training empower teams to make informed decisions independently.</p>
-                    `,
-                    excerpt: "A guide to building data-driven culture, selecting meaningful KPIs, and democratizing analytics access across growing organizations.",
-                    readingTime: 9,
-                    publishedAt: "2025-06-10T15:15:00.000Z",
-                    tags: ["business", "analytics", "strategy"],
-                    category: "Data & Analytics"
-                },
-                {
-                    id: 8,
-                    title: "Modern Frontend Development: React, Performance, and the Future of Web Applications",
-                    slug: "modern-frontend-development",
-                    content: `
-                        <p>Frontend development continues to evolve rapidly, with new frameworks, tools, and best practices emerging regularly. Staying current while building maintainable, performant applications requires strategic technology choices.</p>
-                        
-                        <h2>React Ecosystem Evolution</h2>
-                        <p>React continues to dominate frontend development, with new features like Server Components and Concurrent Rendering changing how we think about application architecture. Understanding these advances helps developers build more efficient, user-friendly applications.</p>
-                        
-                        <h2>Performance Optimization Strategies</h2>
-                        <p>Web performance directly impacts user experience and business metrics. Techniques like code splitting, lazy loading, and effective caching strategies can dramatically improve application speed and user satisfaction.</p>
-                        
-                        <h2>The Rise of Meta-Frameworks</h2>
-                        <p>Frameworks like Next.js, Remix, and SvelteKit provide opinionated solutions for common challenges like routing, data fetching, and deployment. Choosing the right meta-framework can accelerate development while providing excellent developer experience.</p>
-                    `,
-                    excerpt: "An exploration of modern frontend development practices, React ecosystem updates, and performance optimization techniques for web applications.",
-                    readingTime: 11,
-                    publishedAt: "2025-06-08T10:45:00.000Z",
-                    tags: ["technology", "development", "frontend"],
-                    category: "Frontend Development"
-                },
-                {
-                    id: 9,
-                    title: "Customer Success Strategy: Turning Users into Advocates",
-                    slug: "customer-success-strategy",
-                    content: `
-                        <p>Customer success has evolved from a support function to a strategic growth driver. The best companies don't just solve customer problems—they proactively ensure customers achieve their desired outcomes with the product.</p>
-                        
-                        <h2>Proactive Customer Health Monitoring</h2>
-                        <p>Successful customer success teams identify at-risk accounts before problems arise. This involves tracking usage patterns, engagement metrics, and satisfaction scores to predict and prevent churn.</p>
-                        
-                        <h2>Onboarding for Long-term Success</h2>
-                        <p>The onboarding experience sets the tone for the entire customer relationship. Effective onboarding focuses on helping customers achieve their first meaningful outcome quickly, rather than just explaining product features.</p>
-                        
-                        <h2>Building Customer Advocacy Programs</h2>
-                        <p>Satisfied customers become powerful advocates for your business. Structured advocacy programs, including case studies, referral incentives, and user communities, turn happy customers into active promoters of your brand.</p>
-                    `,
-                    excerpt: "Strategies for building effective customer success programs that drive retention, expansion, and advocacy in SaaS businesses.",
-                    readingTime: 8,
-                    publishedAt: "2025-06-05T14:20:00.000Z",
-                    tags: ["business", "customer", "saas"],
-                    category: "Customer Success"
-                },
-                {
-                    id: 10,
-                    title: "Agile Transformation: Beyond Scrum to True Business Agility",
-                    slug: "agile-transformation",
-                    content: `
-                        <p>True agile transformation goes beyond implementing Scrum ceremonies. It requires fundamental changes in organizational culture, decision-making processes, and how teams collaborate across departments.</p>
-                        
-                        <h2>Culture Over Process</h2>
-                        <p>Successful agile transformations prioritize cultural change over process implementation. This means fostering psychological safety, encouraging experimentation, and creating an environment where failure is viewed as learning.</p>
-                        
-                        <h2>Cross-functional Collaboration</h2>
-                        <p>Breaking down silos between departments is essential for organizational agility. Cross-functional teams with diverse skills can respond more quickly to market changes and customer needs.</p>
-                        
-                        <h2>Continuous Improvement Mindset</h2>
-                        <p>Agility requires constant adaptation and improvement. Organizations must build feedback loops, regular retrospectives, and mechanisms for rapidly implementing changes based on new information.</p>
-                    `,
-                    excerpt: "A deep dive into agile transformation, focusing on cultural change, cross-functional collaboration, and building organizational agility.",
-                    readingTime: 9,
-                    publishedAt: "2025-06-03T12:00:00.000Z",
-                    tags: ["business", "agile", "transformation"],
-                    category: "Organizational Development"
-                },
-                {
-                    id: 11,
-                    title: "API Design Principles: Building Developer-Friendly Interfaces",
-                    slug: "api-design-principles",
-                    content: `
-                        <p>Well-designed APIs are the backbone of modern software architecture. Creating developer-friendly APIs requires careful consideration of consistency, documentation, versioning, and the overall developer experience.</p>
-                        
-                        <h2>RESTful Design Principles</h2>
-                        <p>REST APIs should be intuitive and predictable. Following established conventions for HTTP methods, status codes, and resource naming makes APIs easier to understand and integrate with.</p>
-                        
-                        <h2>Documentation as Product</h2>
-                        <p>Excellent documentation is crucial for API adoption. Interactive documentation tools, comprehensive examples, and clear getting-started guides significantly impact developer experience and API success.</p>
-                        
-                        <h2>Versioning and Backward Compatibility</h2>
-                        <p>API evolution must balance innovation with stability. Effective versioning strategies allow for new features while maintaining backward compatibility for existing integrations.</p>
-                    `,
-                    excerpt: "Essential principles for designing APIs that developers love to use, covering REST conventions, documentation, and versioning strategies.",
-                    readingTime: 7,
-                    publishedAt: "2025-06-01T16:30:00.000Z",
-                    tags: ["technology", "api", "development"],
-                    category: "API Development"
-                },
-                {
-                    id: 12,
-                    title: "The Future of Work: Hybrid Models and Organizational Design",
-                    slug: "future-of-work-hybrid-models",
-                    content: `
-                        <p>The future of work is hybrid, but successful implementation requires more than just allowing people to work from home sometimes. It demands thoughtful organizational design and new management approaches.</p>
-                        
-                        <h2>Designing Hybrid Work Policies</h2>
-                        <p>Effective hybrid policies balance flexibility with collaboration needs. This involves determining which activities benefit from in-person interaction and which can be done effectively remotely.</p>
-                        
-                        <h2>Technology Infrastructure for Hybrid Teams</h2>
-                        <p>Hybrid work requires technology that seamlessly connects remote and in-office team members. Video conferencing, collaboration tools, and digital whiteboarding become essential infrastructure.</p>
-                        
-                        <h2>Measuring Productivity in Hybrid Environments</h2>
-                        <p>Traditional productivity metrics may not work in hybrid environments. Organizations need new ways to measure performance that focus on outcomes rather than location or hours worked.</p>
-                    `,
-                    excerpt: "Exploring hybrid work models, organizational design considerations, and management strategies for the future of work.",
-                    readingTime: 8,
-                    publishedAt: "2025-05-30T11:45:00.000Z",
-                    tags: ["business", "future", "work"],
-                    category: "Future of Work"
-                }
-            ];
-        }
+
         
         // Router
         class Router {
@@ -1282,7 +1035,7 @@
                         break;
                     case 'articles':
                         if (slug) {
-                            this.showArticle(slug);
+                            this.redirectToMedium(slug);
                         } else {
                             this.showPage('articles-page');
                             this.loadAllArticles();
@@ -1290,19 +1043,15 @@
                         break;
                     case 'article':
                         if (slug) {
-                            this.showArticle(slug);
+                            this.redirectToMedium(slug);
                         }
                         break;
-
                     case 'about':
                         this.showPage('about-page');
                         break;
-                        
                     default:
                         this.showPage('home-page');
                 }
-                
-                this.updateReadingProgress();
             }
             
             hideAllPages() {
@@ -1317,85 +1066,15 @@
                 setTimeout(() => this.triggerAnimations(), 100);
             }
             
-            showArticle(slug) {
+            redirectToMedium(slug) {
                 const article = articles.find(a => a.slug === slug);
-                if (article) {
-                    this.renderArticle(article);
-                    this.showPage('article-page');
+                if (article && article.mediumUrl) {
+                    window.open(article.mediumUrl, '_blank');
+                    // Redirect back to articles page
+                    window.location.hash = 'articles';
                 } else {
                     this.showPage('home-page');
                 }
-            }
-            
-            renderArticle(article) {
-                const publishDate = new Date(article.publishedAt).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-                
-                articleContent.innerHTML = `
-                    <div class="mb-12">
-                        <a href="#articles" class="inline-flex items-center text-medium-gray-600 dark:text-medium-gray-400 hover:text-medium-green transition-colors font-medium text-lg">
-                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                            </svg>
-                            Back to Articles
-                        </a>
-                    </div>
-                    
-                    <article class="prose prose-xl max-w-none dark:prose-invert">
-                        <div class="mb-16">
-                            <div class="flex items-center space-x-4 mb-8">
-                                ${article.tags.map(tag => `
-                                    <span class="px-4 py-2 bg-medium-green text-white text-sm font-medium rounded-full">
-                                        ${tag}
-                                    </span>
-                                `).join('')}
-                            </div>
-                            <h1 class="text-5xl md:text-6xl font-bold text-medium-gray-900 dark:text-white mb-12 leading-tight tracking-tight">${article.title}</h1>
-                            
-                            <div class="flex items-center text-medium-gray-600 dark:text-medium-gray-400 mb-12">
-                                <div class="w-12 h-12 rounded-full hero-gradient flex items-center justify-center text-white text-lg font-bold mr-4">
-                                    MT
-                                </div>
-                                <div>
-                                    <div class="font-semibold text-lg text-medium-gray-900 dark:text-white">MT Kiran Bishwo</div>
-                                    <div class="text-base">${publishDate} • ${article.readingTime} min read</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="article-body font-charter text-xl leading-relaxed text-medium-gray-900 dark:text-white space-y-8">
-                            ${article.content}
-                        </div>
-                        
-                        <div class="mt-20 pt-12 border-t border-medium-gray-200 dark:border-medium-gray-700">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-6">
-                                    <button class="flex items-center space-x-3 text-medium-gray-600 dark:text-medium-gray-400 hover:text-medium-green transition-colors text-lg">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                                        </svg>
-                                        <span>Like</span>
-                                    </button>
-                                    <button class="flex items-center space-x-3 text-medium-gray-600 dark:text-medium-gray-400 hover:text-medium-green transition-colors text-lg">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                                        </svg>
-                                        <span>Comment</span>
-                                    </button>
-                                </div>
-                                <button class="flex items-center space-x-3 text-medium-gray-600 dark:text-medium-gray-400 hover:text-medium-green transition-colors text-lg">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
-                                    </svg>
-                                    <span>Share</span>
-                                </button>
-                            </div>
-                        </div>
-                    </article>
-                `;
             }
             
             triggerAnimations() {
@@ -1405,64 +1084,15 @@
                     }, index * 100);
                 });
             }
-            
-            updateReadingProgress() {
-                if (window.location.hash.includes('article/')) {
-                    document.addEventListener('scroll', this.handleScroll.bind(this));
-                    readingProgress.style.display = 'block';
-                } else {
-                    document.removeEventListener('scroll', this.handleScroll.bind(this));
-                    readingProgress.style.display = 'none';
-                }
-            }
-            
-            handleScroll() {
-                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                const scrolled = (winScroll / height) * 100;
-                readingProgress.style.width = scrolled + '%';
-            }
         }
         
         // Article Functions
-        async function fetchArticles() {
-            try {
-                const response = await fetch(`${STRAPI_URL}/api/articles?populate=*&sort=publishedAt:desc`);
-                const data = await response.json();
-                
-                if (data.data) {
-                    articles = data.data.map(transformArticleData);
-                } else {
-                    articles = getFallbackArticles();
-                }
-            } catch (error) {
-                console.error('Error fetching articles:', error);
-                articles = getFallbackArticles();
-            }
-            
+        function loadArticles() {
+            articles = ARTICLES;
+            console.log('Articles loaded from HTML:', articles.length);
             filteredArticles = articles;
             renderFeaturedArticle();
             renderLatestArticles();
-        }
-        
-        function transformArticleData(article) {
-            return {
-                id: article.id,
-                title: article.attributes.title,
-                slug: article.attributes.slug,
-                content: article.attributes.content,
-                excerpt: article.attributes.excerpt,
-                readingTime: article.attributes.readingTime || calculateReadingTime(article.attributes.content),
-                publishedAt: article.attributes.publishedAt,
-                tags: article.attributes.tags || [],
-                category: article.attributes.category || 'General'
-            };
-        }
-        
-        function calculateReadingTime(content) {
-            const wordsPerMinute = 200;
-            const words = content.replace(/<[^>]*>/g, '').split(/\s+/).length;
-            return Math.ceil(words / wordsPerMinute);
         }
         
         function renderFeaturedArticle() {
@@ -1476,7 +1106,7 @@
             });
             
             featuredArticle.innerHTML = `
-                <article class="bg-white dark:bg-medium-gray-800 rounded-lg p-8 shadow-sm border border-medium-gray-200 dark:border-medium-gray-700 cursor-pointer article-card" onclick="window.location.hash = 'article/${featured.slug}'">
+                <article class="bg-white dark:bg-medium-gray-800 rounded-lg p-8 shadow-sm border border-medium-gray-200 dark:border-medium-gray-700 cursor-pointer article-card" onclick="redirectToMedium('${featured.slug}')">
                     <div class="mb-4">
                         <div class="flex items-center space-x-2 mb-3">
                             ${featured.tags.slice(0, 2).map(tag => `
@@ -1501,6 +1131,7 @@
                             <div class="flex items-center space-x-4">
                                 <span>${publishDate}</span>
                                 <span>${featured.readingTime} min read</span>
+                                <span class="text-medium-green font-medium">Read on Medium →</span>
                             </div>
                         </div>
                     </div>
@@ -1537,13 +1168,13 @@
             });
             
             return `
-                <article class="flex space-x-6 py-6 border-b border-medium-gray-200 dark:border-medium-gray-700 last:border-b-0 article-card fade-in cursor-pointer" onclick="window.location.hash = 'article/${article.slug}'">
+                <article class="flex space-x-6 py-6 border-b border-medium-gray-200 dark:border-medium-gray-700 last:border-b-0 article-card fade-in cursor-pointer" onclick="redirectToMedium('${article.slug}')">
                     <div class="flex-1">
                         <div class="flex items-center space-x-2 mb-2">
                             <div class="w-6 h-6 rounded-full hero-gradient flex items-center justify-center text-white text-xs font-bold">
                                 MT
                             </div>
-                                                            <span class="text-sm text-medium-gray-600 dark:text-medium-gray-400 font-medium">MT Kiran Bishwo</span>
+                            <span class="text-sm text-medium-gray-600 dark:text-medium-gray-400 font-medium">MT Kiran Bishwo</span>
                         </div>
                         <h3 class="text-xl font-bold text-medium-gray-900 dark:text-white mb-2 leading-tight article-title hover:text-medium-green transition-colors">
                             ${article.title}
@@ -1554,6 +1185,7 @@
                         <div class="flex items-center space-x-4 text-sm text-medium-gray-500 dark:text-medium-gray-500">
                             <span>${publishDate}</span>
                             <span>${article.readingTime} min read</span>
+                            <span class="text-medium-green font-medium">Read on Medium →</span>
                             <div class="flex items-center space-x-2">
                                 ${article.tags.slice(0, 2).map(tag => `
                                     <span class="px-2 py-1 bg-medium-gray-200 dark:bg-medium-gray-700 text-medium-gray-700 dark:text-medium-gray-300 rounded text-xs">
@@ -1570,6 +1202,14 @@
                     </div>
                 </article>
             `;
+        }
+        
+        // Medium redirect function
+        function redirectToMedium(slug) {
+            const article = articles.find(a => a.slug === slug);
+            if (article && article.mediumUrl) {
+                window.open(article.mediumUrl, '_blank');
+            }
         }
         
         // Search functionality
@@ -1617,10 +1257,11 @@
             
             searchResults.innerHTML = results.map(article => `
                 <div class="p-4 border-b border-medium-gray-200 dark:border-medium-gray-700 last:border-b-0 cursor-pointer hover:bg-medium-gray-100 dark:hover:bg-medium-gray-700 transition-colors" 
-                     onclick="window.location.hash = 'article/${article.slug}'; document.getElementById('search-modal').classList.add('hidden');">
+                     onclick="redirectToMedium('${article.slug}'); document.getElementById('search-modal').classList.add('hidden');">
                     <h4 class="font-semibold text-medium-gray-900 dark:text-white mb-2">${article.title}</h4>
                     <p class="text-sm text-medium-gray-600 dark:text-medium-gray-400 clamp-2">${article.excerpt}</p>
                     <div class="flex items-center space-x-2 mt-2">
+                        <span class="text-medium-green font-medium text-xs">Read on Medium →</span>
                         ${article.tags.slice(0, 2).map(tag => `
                             <span class="px-2 py-1 bg-medium-gray-200 dark:bg-medium-gray-600 text-medium-gray-700 dark:text-medium-gray-300 rounded text-xs">
                                 ${tag}
@@ -1701,7 +1342,7 @@
         // Initialize everything
         function initialize() {
             const router = new Router();
-            fetchArticles();
+            loadArticles();
             initializeSearch();
             initializeTagFiltering();
             initializeMobileMenu();
@@ -1719,6 +1360,8 @@
         
         // Start the application
         document.addEventListener('DOMContentLoaded', initialize);
+
+
     </script>
 </body>
 </html>
