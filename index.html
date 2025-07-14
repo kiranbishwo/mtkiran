@@ -24,6 +24,17 @@
           return;
         }
 
+        // Load saved theme from localStorage
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme) {
+          currentTheme = savedTheme;
+          if (savedTheme === "dark") {
+            html.classList.add("dark");
+          } else {
+            html.classList.remove("dark");
+          }
+        }
+
         const toggles = [darkModeToggle, darkModeToggleMobile].filter(Boolean);
 
         toggles.forEach((toggle) => {
@@ -36,6 +47,10 @@
               html.classList.add("transitioning");
               const isDark = html.classList.toggle("dark");
               currentTheme = isDark ? "dark" : "light";
+              
+              // Save theme to localStorage
+              localStorage.setItem("theme", currentTheme);
+              
               updateDarkModeIcon(isDark);
               setTimeout(() => {
                 html.classList.remove("transitioning");
@@ -378,7 +393,7 @@
           <div class="flex items-center">
             <a
               href="#home"
-              class="text-xl font-bold text-medium-gray-900 hover:text-medium-green transition-colors"
+              class="text-xl font-bold text-medium-gray-900 dark:text-medium-gray-100 hover:text-medium-green dark:hover:text-medium-green transition-colors"
             >
               MT Kiran Bishwo
             </a>
@@ -1952,29 +1967,29 @@
       const ARTICLES = [
         {
           id: 9,
-          title: "Customer Success Strategy: Turning Users into Advocates",
-          slug: "customer-success-strategy",
+          title: "The Definitive Guide: Choosing Between Laravel and Django in 2025",
+          slug: "laravel-vs-django-2025",
           excerpt:
-            "Strategies for building effective customer success programs that drive retention, expansion, and advocacy in SaaS businesses.",
+            "A comprehensive comparison of Laravel and Django frameworks in 2025, covering performance, ecosystem, learning curve, and real-world use cases to help you choose the right framework for your project.",
           readingTime: 8,
           publishedAt: "2025-06-05T14:20:00.000Z",
-          tags: ["business", "customer", "saas"],
-          category: "Customer Success",
+          tags: ["technology", "laravel", "django", "development"],
+          category: "Framework Comparison",
           mediumUrl:
-            "https://medium.com/@mtkiranbishwo/customer-success-strategy-turning-users-into-advocates",
+            "https://medium.com/@mtkiranbishwo/the-definitive-guide-choosing-between-laravel-and-django-in-2024-62866b1e6d83",
         },
         {
           id: 10,
-          title: "Agile Transformation: Beyond Scrum to True Business Agility",
-          slug: "agile-transformation",
+          title: "Apartment vs. House: A Simple Analogy to Understand SaaS Architecture (Single vs. Multi-Tenant)",
+          slug: "saas-architecture-apartment-vs-house",
           excerpt:
-            "A deep dive into agile transformation, focusing on cultural change, cross-functional collaboration, and building organizational agility.",
+            "Using the simple analogy of apartment vs. house to explain single-tenant vs. multi-tenant SaaS architecture, making complex technical concepts easy to understand for business and technical audiences.",
           readingTime: 9,
-          publishedAt: "2025-06-03T12:00:00.000Z",
-          tags: ["business", "agile", "transformation"],
-          category: "Organizational Development",
+          publishedAt: "2025-07-01T12:00:00.000Z",
+          tags: ["technology", "saas", "architecture", "business"],
+          category: "SaaS Architecture",
           mediumUrl:
-            "https://medium.com/@mtkiranbishwo/agile-transformation-beyond-scrum-to-true-business-agility",
+            "https://medium.com/@mtkiranbishwo/apartment-vs-house-a-simple-analogy-to-understand-saas-architecture-single-vs-multi-tenant-ad5d158bb92b",
         },
         {
           id: 11,
@@ -2488,27 +2503,29 @@
         );
 
         return `
-                <article class="flex space-x-6 py-6 border-b border-medium-gray-200 dark:border-medium-gray-700 last:border-b-0 article-card fade-in cursor-pointer" onclick="redirectToMedium('${
+                <article class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 py-6 border-b border-medium-gray-200 dark:border-medium-gray-700 last:border-b-0 article-card fade-in cursor-pointer" onclick="redirectToMedium('${
                   article.slug
                 }')">
-                    <div class="flex-1">
+                    <div class="flex-1 min-w-0 sm:mr-6">
                         <div class="flex items-center space-x-2 mb-2">
-                            <div class="w-6 h-6 rounded-full hero-gradient flex items-center justify-center text-white text-xs font-bold">
+                            <div class="w-6 h-6 rounded-full hero-gradient flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
                                 MT
                             </div>
                             <span class="text-sm text-medium-gray-600 dark:text-medium-gray-400 font-medium">MT Kiran Bishwo</span>
                         </div>
-                        <h3 class="text-xl font-bold text-medium-gray-900 dark:text-white mb-2 leading-tight article-title hover:text-medium-green transition-colors">
+                        <h3 class="text-lg sm:text-xl font-bold text-medium-gray-900 dark:text-white mb-2 leading-tight article-title hover:text-medium-green transition-colors">
                             ${article.title}
                         </h3>
                         <p class="text-medium-gray-600 dark:text-medium-gray-400 leading-relaxed mb-4 clamp-2">
                             ${article.excerpt}
                         </p>
-                        <div class="flex items-center space-x-4 text-sm text-medium-gray-500 dark:text-medium-gray-500">
-                            <span>${publishDate}</span>
-                            <span>${article.readingTime} min read</span>
-                            <span class="text-medium-green font-medium">Read on Medium →</span>
-                            <div class="flex items-center space-x-2">
+                        <div class="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 text-sm text-medium-gray-500 dark:text-medium-gray-500">
+                            <div class="flex flex-wrap items-center space-x-4">
+                                <span>${publishDate}</span>
+                                <span>${article.readingTime} min read</span>
+                                <span class="text-medium-green font-medium">Read on Medium →</span>
+                            </div>
+                            <div class="flex items-center space-x-2 sm:ml-4">
                                 ${article.tags
                                   .slice(0, 2)
                                   .map(
@@ -2522,7 +2539,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="w-24 h-16 bg-medium-gray-200 dark:bg-medium-gray-700 rounded flex items-center justify-center flex-shrink-0">
+                    <div class="w-full sm:w-24 h-16 bg-medium-gray-200 dark:bg-medium-gray-700 rounded flex items-center justify-center flex-shrink-0">
                         <span class="text-medium-gray-500 dark:text-medium-gray-400 text-2xl font-bold">
                             ${article.title.charAt(0)}
                         </span>
